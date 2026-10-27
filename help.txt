@@ -1,0 +1,107 @@
+STUDENT ATTENDANCE MANAGEMENT - JDBC HELP FILE
+================================================
+
+Files
+-----
+- AttendanceManagement.java : Java application source code
+- HELP_CONNECTION.txt       : this setup guide
+- README.md                 : project overview and quick start
+- .gitignore                : excludes generated files and local credentials
+
+REQUIREMENTS
+------------
+1. Java JDK installed (javac and java available in terminal).
+2. Oracle Database running locally or reachable on your network.
+3. Oracle JDBC driver JAR, for example ojdbc17.jar.
+4. SQL*Plus or another Oracle SQL client.
+
+STEP 1 - CREATE TABLES
+----------------------
+Connect to your Oracle database in SQL*Plus and run:
+
+CREATE TABLE STUDENTS (
+    STUDENT_ID NUMBER PRIMARY KEY,
+    NAME VARCHAR2(50)
+);
+
+CREATE TABLE ATTENDANCE (
+    STUDENT_ID NUMBER,
+    ATTENDANCE_DATE DATE,
+    STATUS VARCHAR2(10),
+    FOREIGN KEY (STUDENT_ID) REFERENCES STUDENTS(STUDENT_ID),
+    CHECK (STATUS IN ('Present', 'Absent')),
+    PRIMARY KEY (STUDENT_ID, ATTENDANCE_DATE)
+);
+
+Optional sample data:
+
+INSERT INTO STUDENTS VALUES (101, 'Rahul');
+INSERT INTO STUDENTS VALUES (102, 'Priya');
+INSERT INTO STUDENTS VALUES (103, 'Amit');
+COMMIT;
+
+If you already created these tables, do not create them again. Check them with:
+SELECT * FROM STUDENTS;
+SELECT * FROM ATTENDANCE;
+
+STEP 2 - CONFIGURE THE CONNECTION
+---------------------------------
+Open AttendanceManagement.java and find DriverManager.getConnection(...).
+
+Example:
+Connection con = DriverManager.getConnection(
+    "jdbc:oracle:thin:@localhost:1521:xe",
+    "system",
+    "your_password"
+);
+
+Replace "your_password" with your own Oracle password. Do not publish a real
+password to GitHub. If you use a different database account, use that username.
+
+The URL depends on your Oracle setup:
+- SID-style XE:       jdbc:oracle:thin:@localhost:1521:xe
+- Service-name style: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+
+Use the URL/service name configured on your machine. The database host and port
+may also differ. The Java driver class used by this project is:
+oracle.jdbc.OracleDriver
+
+STEP 3 - PLACE THE JDBC JAR
+---------------------------
+Put the downloaded JDBC JAR (for example ojdbc17.jar) in the same folder as
+AttendanceManagement.java. The JAR is not included in this project archive.
+Download the driver from Oracle's official JDBC download page and use the JAR
+appropriate for your Java version.
+
+STEP 4 - COMPILE AND RUN (WINDOWS POWERSHELL)
+---------------------------------------------
+Open the terminal in the project folder. If the JAR is named ojdbc17.jar:
+
+Compile:
+javac -cp ".;ojdbc17.jar" AttendanceManagement.java
+
+Run:
+java -cp ".;ojdbc17.jar" AttendanceManagement
+
+If your JAR has a different filename, replace ojdbc17.jar in both commands.
+
+STEP 5 - USE THE PROGRAM
+------------------------
+1. Mark Attendance: enter an existing student ID, date as yyyy-mm-dd, and
+   Present or Absent.
+2. Display Student Attendance: enter the student ID to see recorded dates/status.
+3. Calculate Attendance Percentage: Present records / all recorded attendance
+   records * 100.
+4. Exit: closes the application.
+
+IMPORTANT NOTES
+---------------
+- A student must exist in STUDENTS before attendance can be marked.
+- Only one attendance record per student per date is allowed by the primary key.
+- If you try to mark attendance for the same student and date twice, the program
+  reports that the record already exists.
+- The percentage is based on dates recorded in ATTENDANCE; ensure every class
+  date is entered if you want an accurate percentage.
+- Do not upload the JDBC JAR, compiled .class files, or real database credentials
+  to GitHub.
+- Never commit passwords or other secrets to a public repository.

@@ -1,9 +1,0 @@
-# Java compiled output
-*.class
-
-# Oracle JDBC driver (download separately; do not commit third-party JAR)
-ojdbc*.jar
-
-# Local configuration / secrets
-.env
-*.local

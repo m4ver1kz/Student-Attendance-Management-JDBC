@@ -12,7 +12,7 @@ public class AttendanceManagement {
             Connection con = DriverManager.getConnection(
                 "jdbc:oracle:thin:@localhost:1521/XE",
                 "system",
-                "admin123"
+                "your_password"
             );
             con.setAutoCommit(false);
 
